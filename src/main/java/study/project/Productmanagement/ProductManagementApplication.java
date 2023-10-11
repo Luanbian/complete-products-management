@@ -17,5 +17,4 @@ public class ProductManagementApplication {
 		flyway.migrate();
 		return flyway;
 	}
-
 }
