@@ -1,4 +1,6 @@
 package study.project.Productmanagement.controllers;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -6,6 +8,8 @@ import jakarta.validation.Valid;
 import study.project.Productmanagement.domain.product.Product;
 import study.project.Productmanagement.domain.product.ProductRepository;
 import study.project.Productmanagement.domain.product.RequestProduct;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -25,5 +29,19 @@ public class ProductController {
         Product newProduct = Product.create(data);
         repository.save(newProduct);
         return ResponseEntity.ok(newProduct);
+    }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity updateProduct(@RequestBody @Valid RequestProduct data) {
+        Optional<Product> optionalProduct = repository.findById(data.id());
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setName(data.name());
+            product.setPrice_in_cents(data.price_in_cents());
+            return ResponseEntity.ok(product);
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 }
