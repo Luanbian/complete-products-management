@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import study.project.Productmanagement.data.usecases.createProduct.CreateProduct;
 import study.project.Productmanagement.domain.product.Product;
 import study.project.Productmanagement.domain.product.ProductRepository;
 import study.project.Productmanagement.domain.product.RequestProduct;
@@ -13,9 +14,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
+    private final ProductRepository repository;
+    private final CreateProduct createProduct;
 
     @Autowired
-    private ProductRepository repository;
+    public ProductController (ProductRepository repository, CreateProduct createProduct) {
+        this.repository = repository;
+        this.createProduct = createProduct;
+    }
 
     @GetMapping
     public ResponseEntity getProducts() {
@@ -25,8 +31,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity createProduct(@RequestBody @Valid RequestProduct data) {
-        Product newProduct = Product.create(data);
-        repository.save(newProduct);
+        Product newProduct = createProduct.perform(data);
         return ResponseEntity.ok(newProduct);
     }
 
