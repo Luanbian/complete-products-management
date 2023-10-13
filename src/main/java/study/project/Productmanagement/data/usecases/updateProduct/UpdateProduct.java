@@ -1,6 +1,5 @@
 package study.project.Productmanagement.data.usecases.updateProduct;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import study.project.Productmanagement.domain.product.Product;

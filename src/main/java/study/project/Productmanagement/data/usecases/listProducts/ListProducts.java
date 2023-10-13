@@ -1,4 +1,4 @@
-package study.project.Productmanagement.data.usecases.ListProducts;
+package study.project.Productmanagement.data.usecases.listProducts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
