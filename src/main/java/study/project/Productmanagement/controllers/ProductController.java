@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import study.project.Productmanagement.data.usecases.ListProducts.ListProducts;
 import study.project.Productmanagement.data.usecases.createProduct.CreateProduct;
+import study.project.Productmanagement.data.usecases.updateProduct.UpdateProduct;
+import study.project.Productmanagement.data.usecases.updateProduct.UpdtProd;
 import study.project.Productmanagement.domain.product.Product;
 import study.project.Productmanagement.domain.product.ProductRepository;
 import study.project.Productmanagement.domain.product.RequestProduct;
@@ -19,16 +21,19 @@ public class ProductController {
     private final ProductRepository repository;
     private final CreateProduct createProduct;
     private final ListProducts listProducts;
+    private final UpdtProd<Object> updateProduct;
 
     @Autowired
     public ProductController (
             ProductRepository repository,
             CreateProduct createProduct,
-            ListProducts listProducts
+            ListProducts listProducts,
+            UpdtProd<Object> updateProduct
     ) {
         this.repository = repository;
         this.createProduct = createProduct;
         this.listProducts = listProducts;
+        this.updateProduct = updateProduct;
     }
 
     @GetMapping
@@ -45,16 +50,9 @@ public class ProductController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity updateProduct(@RequestBody @Valid RequestProduct data) {
-        Optional<Product> optionalProduct = repository.findById(data.id());
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            product.setName(data.name());
-            product.setPrice_in_cents(data.price_in_cents());
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Object> updateProduct(@RequestBody @Valid RequestProduct data) {
+        Object update = updateProduct.perform(data);
+        return ResponseEntity.ok(update);
     }
 
     @DeleteMapping
