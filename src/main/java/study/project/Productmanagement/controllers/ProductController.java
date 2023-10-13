@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import study.project.Productmanagement.data.usecases.ListProducts.ListProducts;
 import study.project.Productmanagement.data.usecases.createProduct.CreateProduct;
 import study.project.Productmanagement.domain.product.Product;
 import study.project.Productmanagement.domain.product.ProductRepository;
 import study.project.Productmanagement.domain.product.RequestProduct;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -16,17 +18,23 @@ import java.util.Optional;
 public class ProductController {
     private final ProductRepository repository;
     private final CreateProduct createProduct;
+    private final ListProducts listProducts;
 
     @Autowired
-    public ProductController (ProductRepository repository, CreateProduct createProduct) {
+    public ProductController (
+            ProductRepository repository,
+            CreateProduct createProduct,
+            ListProducts listProducts
+    ) {
         this.repository = repository;
         this.createProduct = createProduct;
+        this.listProducts = listProducts;
     }
 
     @GetMapping
     public ResponseEntity getProducts() {
-        var allProducts = repository.findAll();
-        return ResponseEntity.ok(allProducts);
+        List<Product> listProduct = listProducts.perform();
+        return ResponseEntity.ok(listProduct);
     }
 
     @PostMapping
